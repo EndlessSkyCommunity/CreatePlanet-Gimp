@@ -50,11 +50,10 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
 	width = image.width
 	image.resize(width, width, 0, 0)
 	texturelayer.scale(width, width, 0, 0)
-# if larger, scale it to 1920x1920
-	if width > 1920:
+	if width > 1920: # scale it to 1920x1920, if necessary
 		image.resize(1920, 1920, 0, 0)
 		texturelayer.scale(1920, 1920, 0, 0)
-	width = image.width
+		width = image.width
 
 # map the texture to a sphere to create the planet
 	maptoobject(image, texturelayer)
@@ -107,12 +106,12 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
 
 # erase the atmosphere above the dark side
 	planetedge = width/3.4 # the shortest possible distance between the image edge and the planet's surface
-	count=0
-	while(count < 4): # loop 4 times
+	counter = 0
+	while(counter < 4): # loop 4 times
 		pdb.gimp_eraser(atmosphere, 2, (width/2, planetedge), 1, 1) # stroke point 1
 		pdb.gimp_eraser(atmosphere, 2, (planetedge, planetedge), 0, 1) # stroke point 2
 		pdb.gimp_eraser(atmosphere, 2, (width-planetedge, planetedge), 0, 1) # stroke point 3
-		count = count + 1
+		counter = counter + 1
 	# what exactly happens here? imagine a square around the outside of the planet. there are 3 important points: the upper corners
 	# and the middle of the upper edge. now the script takes 4 strokes on each of these points, with the eraser defined above.
 
@@ -123,31 +122,33 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
 		pdb.plug_in_emboss(image, bumplayer, 90, 60, 4, 0)
 		pdb.gimp_layer_set_mode(bumplayer, 5)
 		pdb.gimp_layer_set_opacity(bumplayer, bumplayeropacity)
-		count=0
-		while(count < 3): # loop 3 times
+		counter = 0
+		while(counter < 3): # loop 3 times
 			image.lower_layer(bumplayer)
-			count = count + 1
+			counter = counter + 1
+
 # add gas layer for gas giants
 	if postprocessing == 2:
 		pdb.plug_in_mblur(image, texturelayer, 0, distance, 0, 0, 0)
 		maptoobject(image, texturelayer)
 		gaslayer = image.active_layer
 		pdb.gimp_layer_set_opacity(gaslayer, gasopacity)
-		count = 0
-		while(count < 3): # loop 3 times
+		counter = 0
+		while(counter < 3): # loop 3 times
 			image.lower_layer(gaslayer)
-			count = count + 1
+			counter = counter + 1
 
 # crop the image around the planet
 	cropoff = int(round(width/4.3)) # minimal distance between the edge of the image and the atmosphere, with tolerance
 	cropheight =  int(round(width/1.86)) # height and width of the selection
 	image.crop(cropheight, cropheight, cropoff, cropoff)
 
-	# save .xcf source file
+# prep filename - even if we don't save anything now, we will use it later
 	if not filename:
 		filename = pdb.gimp_image_get_name(image) # if not specified, use image name
-	if filename.endswith(".png"):
-		filename, dummy = os.path.splitext(filename) # remove file extension
+	filename, dummy = os.path.splitext(filename) # remove file extension
+
+# save a .xcf file, if specified
 	if savexcf:
 		filename = "%s.xcf" % filename # add .xcf
 		rawfilename = filename.decode('utf-8', 'ignore') # rawfilename must be UTF-8

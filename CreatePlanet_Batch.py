@@ -23,30 +23,35 @@ def createplanet_batch(atmospherecolor, postprocessing, planetrand, planetwidth,
 
 # loop once for every file
     for filepath in filelist:
+
     # load and set up the image
         if filepath.endswith((".jpeg,", ".jpg")):
             image = pdb.file_jpeg_load(filepath, filepath)
         elif filepath.endswith(".png"):
             image = pdb.file_png_load(filepath, filepath)
+        else:
+            print 'While processing ' + filepath + ': Unsupported file extension - skipping this image.'
         layer = image.active_layer
+
     # prepare filename
         if os.name == "nt": # we need backslashes on windows, but slashes on linux/mac
-            outputfolder = "%splanets\\" % loadfolder # add the name of a new folder
+            outputfolder = "%splanets\\" % loadfolder
         else:
-            outputfolder = "%splanets//" % loadfolder # add the name of a new folder
+            outputfolder = "%splanets//" % loadfolder
         gimp.message(outputfolder)
         if not os.path.exists(outputfolder):
-                os.makedirs(outputfolder) # create the new folder if it doesn't exist yet
+            os.makedirs(outputfolder)
         filenameext = os.path.basename(filepath) # remove the path and only keep the actual filename with extension
         filename, dummy = os.path.splitext(filenameext) # remove file extension. createplanet will add the correct extension, and we don't want to save an xcf as jpeg.
         outputpath = outputfolder + filename
+
     # set planettype and postprocessing via prefixdetection, if enabled
-        if prefixdetection: # set post processing based on the file prefix, if prefix detection is enabled
+        if prefixdetection:
             if filename.startswith(("hp_", "otp_", "m")):
                 postprocessing = 1
             elif filename.startswith("gg_"):
                 postprocessing = 2
-            
+
             if filename.startswith("hp_"):
                 planettype = 0
             elif filename.startswith("otp_"):
@@ -57,6 +62,7 @@ def createplanet_batch(atmospherecolor, postprocessing, planetrand, planetwidth,
                 planettype = 3
             elif filename.startswith("gg_"):
                 planettype = 4
+
     # let createplanet do the rest
         pdb.python_fu_createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth, planettype, bumplayeropacity, distance, gasopacity, atmothickness, layer, groupundo, outputpath, savexcf)
 

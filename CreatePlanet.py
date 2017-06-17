@@ -39,7 +39,7 @@ def maptoobject(image, layer): # outsourced into a second method, because it mig
 	0,layer,layer,layer,layer,layer,layer,layer,layer
 	)
 
-def createplanet(image, athmospherecolor, athmospherethickness, postprocessing, bumplayeropacity, distance, gasopacity, texturelayer, groupundo, planettype, filename, savexcf):
+def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth, planettype, bumplayeropacity, distance, gasopacity, atmothickness, texturelayer, groupundo, filename, savexcf):
 
 	if groupundo:
 		image.undo_group_start()
@@ -76,14 +76,14 @@ def createplanet(image, athmospherecolor, athmospherethickness, postprocessing, 
 	pdb.gimp_context_set_foreground((0,0,0))
 	pdb.gimp_bucket_fill(shadow1, 0, 0, 100, 255, 0, width/2, width/2)
 
-# create a new layer with the athmosphere
-	athmosphere = gimp.Layer(image, "athmosphere", width, width, RGBA_IMAGE, 100, NORMAL_MODE)
-	image.add_layer(athmosphere, 0)
-	pdb.gimp_selection_border(image, athmospherethickness)
-	pdb.gimp_context_set_foreground(athmospherecolor)
-	pdb.gimp_bucket_fill(athmosphere, 0, 0, 100, 255, 0, 1, 1)
+# create a new layer with the atmosphere
+	atmosphere = gimp.Layer(image, "atmosphere", width, width, RGBA_IMAGE, 100, NORMAL_MODE)
+	image.add_layer(atmosphere, 0)
+	pdb.gimp_selection_border(image, atmothickness)
+	pdb.gimp_context_set_foreground(atmospherecolor)
+	pdb.gimp_bucket_fill(atmosphere, 0, 0, 100, 255, 0, 1, 1)
 	pdb.gimp_selection_none(image)
-	pdb.plug_in_gauss_rle(image, athmosphere, width/100, width/100, width/100)
+	pdb.plug_in_gauss_rle(image, atmosphere, width/100, width/100, width/100)
 
 # make the disk a shadow
 	pdb.plug_in_gauss_rle(image, shadow1, width/10, width/10, width/10)
@@ -105,18 +105,18 @@ def createplanet(image, athmospherecolor, athmospherethickness, postprocessing, 
 	pdb.gimp_context_set_brush_aspect_ratio(0)
 	pdb.gimp_context_set_brush_size(width/2) # choose a soft, big brush
 
-# erase the athmosphere above the dark side
+# erase the atmosphere above the dark side
 	planetedge = width/3.4 # the shortest possible distance between the image edge and the planet's surface
 	count=0
 	while(count < 4): # loop 4 times
-		pdb.gimp_eraser(athmosphere, 2, (width/2, planetedge), 1, 1) # stroke point 1
-		pdb.gimp_eraser(athmosphere, 2, (planetedge, planetedge), 0, 1) # stroke point 2
-		pdb.gimp_eraser(athmosphere, 2, (width-planetedge, planetedge), 0, 1) # stroke point 3
+		pdb.gimp_eraser(atmosphere, 2, (width/2, planetedge), 1, 1) # stroke point 1
+		pdb.gimp_eraser(atmosphere, 2, (planetedge, planetedge), 0, 1) # stroke point 2
+		pdb.gimp_eraser(atmosphere, 2, (width-planetedge, planetedge), 0, 1) # stroke point 3
 		count = count + 1
 	# what exactly happens here? imagine a square around the outside of the planet. there are 3 important points: the upper corners
 	# and the middle of the upper edge. now the script takes 4 strokes on each of these points, with the eraser defined above.
 
-# add bumb map for terrestrial planets
+# add bumpmap for terrestrial planets
 	if postprocessing == 1:
 		bumplayer = pdb.gimp_layer_new_from_drawable(planetlayer, image)
 		image.add_layer(bumplayer, 0)
@@ -139,7 +139,7 @@ def createplanet(image, athmospherecolor, athmospherethickness, postprocessing, 
 			count = count + 1
 
 # crop the image around the planet
-	cropoff = int(round(width/4.3)) # minimal distance between the edge of the image and the athmosphere, with tolerance
+	cropoff = int(round(width/4.3)) # minimal distance between the edge of the image and the atmosphere, with tolerance
 	cropheight =  int(round(width/1.86)) # height and width of the selection
 	image.crop(cropheight, cropheight, cropoff, cropoff)
 
@@ -156,17 +156,21 @@ def createplanet(image, athmospherecolor, athmospherethickness, postprocessing, 
 
 
 # resize based on the planet type
-	if planettype == 0:
-		outputwidth = random.randint(150, 210)
-	if planettype == 1:
-		outputwidth = random.randint(100, 250)
-	if planettype == 2:
-		outputwidth = random.randint(60, 100)
-	if planettype == 3:
-		outputwidth = random.randint(280, 360)
-	if planettype == 4:
-		outputwidth = random.randint(360, 450)
-	image.scale(outputwidth, outputwidth)
+	if planetrand:
+		if planettype == 0:
+			outputwidth = random.randint(150, 210)
+		if planettype == 1:
+			outputwidth = random.randint(100, 250)
+		if planettype == 2:
+			outputwidth = random.randint(60, 100)
+		if planettype == 3:
+			outputwidth = random.randint(280, 360)
+		if planettype == 4:
+			outputwidth = random.randint(360, 450)
+		image.scale(outputwidth, outputwidth)
+	if not planetrand:
+		planetint = int(planetwidth)
+		image.scale(planetint, planetint)
 
 # merge layers and save as png
 	pdb.gimp_layer_set_visible(black, FALSE)
@@ -190,15 +194,17 @@ register(
 	"",
 	[
 	(PF_IMAGE, "image", "Input image", None),
-	(PF_COLOR, "athmospherecolor", "Athmosphere Color. Default is white, only use a slight off-white tint for gas giants.", (255,255,255)),
-	(PF_SLIDER, "athmospherethickness", "The thickness used for the athmosphere.", 1.5, (0, 3, 0.05)),
+	(PF_COLOR, "atmospherecolor", "Athmosphere Color. Default is white, only use a slight off-white tint for gas giants.", (255,255,255)),
 	(PF_RADIO, "postprocessing", "Determines what post-processing will be used", 0 , (("None", 0),("Terrestrial Planet", 1),("Gas Giant", 2))),
+	(PF_BOOL, "planetrand", "Random planet size, based on planet type chosen.", False ),
+	(PF_SLIDER, "planetwidth", "The width of the new planet. Habitable Planet (150-210px), Other Terrestrial Planet (100-250px), Moon (60-110px), Ice Giant (280-360px), Gas Giant (360-450px)", 1, (60, 600, 10)),
+	(PF_OPTION, "planettype", "Planettype, determines the width of the output image. Only effective for random planet sizes.", 1 , ("Habitable Planet (150-210px)", "Other Terrestrial Planet (100-250px)", "Moon (60-110px)", "Ice Giant (280-360px)", "Gas Giant (360-450px)")),
 	(PF_SLIDER, "bumplayeropacity", "The opacity of the bumpmap layer. Only effective for terrestrial planets.", 80, (0, 100, 1)),
 	(PF_SLIDER, "distance", "The motion blur distance. Only effective for gas giants.", 150, (100, 200, 1)),
 	(PF_SLIDER, "gasopacity", "The gas layer opacity. Only effective for gas giants.", 70, (0, 100, 1)),
+	(PF_SLIDER, "atmothickness", "The thickness of the atmosphere, in pixels.", 1, (0, 3, 0.05)),
 	(PF_DRAWABLE, "texturelayer", "Select your texture layer here.", None),
 	(PF_BOOL, "groupundo", "Group undo steps? If this is true, you can undo the entire script at once.", False ),
-	(PF_OPTION, "planettype", "Planettype, determines the width of the output image", 1 , ("Habitable Planet (150-210px)", "Other Terrestrial Planet (100-250px)", "Moon (60-110px)", "Ice Giant (280-360px)", "Gas Giant (360-450px)")),
 	(PF_FILE, "filename", "The name of the output file. Leave empty to use the texture name.", ""), # insert your default file path here, inside the empty quotes
 	(PF_BOOL, "savexcf", "Do you want to save the .xcf source file? This is useless when Group Undo is enabled.", True)
 	],

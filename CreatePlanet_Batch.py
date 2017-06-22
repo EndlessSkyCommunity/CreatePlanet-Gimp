@@ -6,7 +6,7 @@ import os
 
 pdb = gimp.pdb
 
-def createplanet_batch(atmospherecolor, postprocessing, planetrand, planetwidth, planettype, bumplayeropacity, distance, gasopacity, atmothickness, groupundo, prefixdetection, loadfolder, fileextension, savexcf):
+def createplanet_batch(atmospherecolor, postprocessing, planetrand, planetwidth, planettype, bumplayeropacity, distance, gasopacity, atmothickness, groupundo, prefixdetection, loadfolder, savexcf):
 
 # correct loadfolder: add (back-)slash if needed
     if not loadfolder.endswith(("/", "\\")):
@@ -15,14 +15,8 @@ def createplanet_batch(atmospherecolor, postprocessing, planetrand, planetwidth,
         else:
             loadfolder = loadfolder + "/"
 
-# prepare the file pattern
-    filepattern = loadfolder + fileextension
-    filelist = glob.glob(filepattern)
-    filelist.sort()
-    #gimp.message(" ".join(filelist)
-
 # loop once for every file
-    for filepath in filelist:
+    for filepath in os.listdir(os.getcwd()):
 
     # load and set up the image
         if filepath.endswith((".jpeg,", ".jpg")):
@@ -30,7 +24,7 @@ def createplanet_batch(atmospherecolor, postprocessing, planetrand, planetwidth,
         elif filepath.endswith(".png"):
             image = pdb.file_png_load(filepath, filepath)
         else:
-            print 'While processing ' + filepath + ': Unsupported file extension - skipping this image.'
+			continue
         layer = image.active_layer
 
     # prepare filename
@@ -38,7 +32,7 @@ def createplanet_batch(atmospherecolor, postprocessing, planetrand, planetwidth,
             outputfolder = "%splanets\\" % loadfolder
         else:
             outputfolder = "%splanets//" % loadfolder
-        gimp.message(outputfolder)
+        #gimp.message(outputfolder)
         if not os.path.exists(outputfolder):
             os.makedirs(outputfolder)
         filenameext = os.path.basename(filepath) # remove the path and only keep the actual filename with extension
@@ -47,20 +41,20 @@ def createplanet_batch(atmospherecolor, postprocessing, planetrand, planetwidth,
 
     # set planettype and postprocessing via prefixdetection, if enabled
         if prefixdetection:
-            if filename.startswith(("hp_", "otp_", "m")):
+            if filename.startswith(("hp-", "otp-", "m-")):
                 postprocessing = 1
-            elif filename.startswith("gg_"):
+            elif filename.startswith("gg-"):
                 postprocessing = 2
 
-            if filename.startswith("hp_"):
+            if filename.startswith("hp-"):
                 planettype = 0
-            elif filename.startswith("otp_"):
+            elif filename.startswith("otp-"):
                 planettype = 1
-            elif filename.startswith("m_"):
+            elif filename.startswith("m-"):
                 planettype = 2
-            elif filename.startswith("ig_"):
+            elif filename.startswith("ig-"):
                 planettype = 3
-            elif filename.startswith("gg_"):
+            elif filename.startswith("gg-"):
                 planettype = 4
 
     # let createplanet do the rest
@@ -88,9 +82,8 @@ register(
 	(PF_SLIDER, "gasopacity", "The gas layer opacity. Only effective for gas giants.", 70, (0, 100, 1)),
 	(PF_SLIDER, "atmothickness", "The thickness of the atmosphere, in pixels.", 1, (0, 3, 0.05)),
 	(PF_BOOL, "groupundo", "Group undo steps? If this is true, you can undo the entire script at once.", False ),
-	(PF_BOOL, "prefixdetection", "Prefix Detection sets planet type and post processing depending on the file's prefix. Possible prefixes are: 'hp', 'otp', 'm', 'ig', 'gg' plus and underscore. Example filename: 'hp[underscore]texture00303423.jpg'.", True),
-    (PF_STRING, "loadfolder", "The location of your textures.", ""),
-	(PF_FILE, "fileextension", "Files that should be loaded. Use * to load all files in this folder.", "*.jpg"),
+	(PF_BOOL, "prefixdetection", "Prefix Detection sets planet type and post processing depending on the file's prefix. Possible prefixes are: 'hp-', 'otp-', 'm-', 'ig-', 'gg-'. Example filename: 'hp-texture00303423.jpg'.", True),
+    (PF_DIRNAME, "loadfolder", "The location of your textures.", " "),
 	(PF_BOOL, "savexcf", "Do you want to save the .xcf source file? This is useless when Group Undo is enabled.", True)
 	],
 	[],
@@ -100,3 +93,4 @@ register(
 )
 
 main()
+

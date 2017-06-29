@@ -124,12 +124,11 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
 		bumplayer = pdb.gimp_layer_new_from_drawable(planetlayer, image)
 		image.add_layer(bumplayer, 0)
 		pdb.plug_in_emboss(image, bumplayer, 90, 60, 4, 1)
-		pdb.gimp_image_select_contiguous_color (image, 0, bumplayer, 1, 1)
+		pdb.gimp_context_set_sample_threshold (1)
+		pdb.gimp_image_select_contiguous_color (image, 0, planetlayer, width/2, width/2)
 		pdb.gimp_selection_invert(image)
-		pdb.gimp_selection_feather(image, 5)
-		pdb.gimp_selection_invert(image)
-		while(counter < 5): # loop 3 times
-			pdb.gimp_edit_clear(bumplayer)
+		pdb.gimp_selection_border(image, 2)
+		pdb.gimp_edit_clear(bumplayer)
 		pdb.gimp_layer_set_mode(bumplayer, 5)
 		pdb.gimp_layer_set_opacity(bumplayer, bumplayeropacity)
 		counter = 0

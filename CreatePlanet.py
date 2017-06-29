@@ -119,7 +119,7 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
 	if postprocessing == 1:
 		bumplayer = pdb.gimp_layer_new_from_drawable(planetlayer, image)
 		image.add_layer(bumplayer, 0)
-		pdb.plug_in_emboss(image, bumplayer, 90, 60, 4, 0)
+		pdb.plug_in_emboss(image, bumplayer, 90, 60, 4, 1)
 		pdb.gimp_layer_set_mode(bumplayer, 5)
 		pdb.gimp_layer_set_opacity(bumplayer, bumplayeropacity)
 		counter = 0

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from gimpfu import *
-import glob
 import os
+
+from gimpfu import *
 
 pdb = gimp.pdb
 

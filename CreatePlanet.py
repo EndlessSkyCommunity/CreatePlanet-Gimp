@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import math
-import random
 import os
+import random
+
 from gimpfu import *
 
 pdb = gimp.pdb
@@ -111,7 +111,7 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
 # erase the atmosphere above the dark side
     planetedge = width / 3.4  # the shortest possible distance between the image edge and the planet's surface
     counter = 0
-    while(counter < 4):  # loop 4 times
+    while counter < 4:  # loop 4 times
         pdb.gimp_eraser(atmosphere, 2, (width / 2, planetedge), 1, 1)  # stroke point 1
         pdb.gimp_eraser(atmosphere, 2, (planetedge, planetedge), 0, 1)  # stroke point 2
         pdb.gimp_eraser(atmosphere, 2, (width - planetedge, planetedge), 0, 1)  # stroke point 3
@@ -132,7 +132,7 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
         pdb.gimp_layer_set_mode(bumplayer, 5)
         pdb.gimp_layer_set_opacity(bumplayer, bumplayeropacity)
         counter = 0
-        while(counter < 3):  # loop 3 times
+        while counter < 3:  # loop 3 times
             image.lower_layer(bumplayer)
             counter = counter + 1
 
@@ -143,7 +143,7 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
         gaslayer = image.active_layer
         pdb.gimp_layer_set_opacity(gaslayer, gasopacity)
         counter = 0
-        while(counter < 3):  # loop 3 times
+        while counter < 3:  # loop 3 times
             image.lower_layer(gaslayer)
             counter = counter + 1
 

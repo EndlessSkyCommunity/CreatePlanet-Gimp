@@ -29,7 +29,7 @@ def maptoobject(image, layer):  # outsourced into a second method, because it mi
     -0.5,-0.5,2,
     # light direction x, y, z
     -1,-1,1,
-    # ambientintesity, diffuseintesity, dissufereflectivity, specularreflectivity
+    # ambientintesity, diffuseintesity, diffusereflectivity, specularreflectivity
     0.3,1,0.5,0.5,
     # highlight, antialiasing, tiled, newimage, traparentbackground, radius
     27,1,0,0,1,0.25,
@@ -132,7 +132,7 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
         pdb.gimp_layer_set_mode(bumplayer, 5)
         pdb.gimp_layer_set_opacity(bumplayer, bumplayeropacity)
         counter = 0
-        while counter < 3:  # loop 3 times
+        while counter < 3:
             image.lower_layer(bumplayer)
             counter = counter + 1
 
@@ -143,7 +143,7 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
         gaslayer = image.active_layer
         pdb.gimp_layer_set_opacity(gaslayer, gasopacity)
         counter = 0
-        while counter < 3:  # loop 3 times
+        while counter < 3:
             image.lower_layer(gaslayer)
             counter = counter + 1
 

@@ -39,7 +39,43 @@ def maptoobject(image, layer):  # outsourced into a second method, because it mi
     0,layer,layer,layer,layer,layer,layer,layer,layer
     )
 
-def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth, planettype, bumplayeropacity, distance, gasopacity, atmothickness, texturelayer, groupundo, filename, savexcf):
+"""
+Returns an array with the outputwidth(s). The array always contains either 1 or 2 ints, depending on generate2x.
+The first element is always the actual size, the second one the 2x size (if prompted).
+"""
+def get_outputwidth(planetrand, planettype, generate2x, planetwidth):
+    outputwidth = []
+    if planetrand:
+        if planettype == 0:
+            outputwidth.append(random.randint(150, 210))
+        if planettype == 1:
+            outputwidth.append(random.randint(100, 250))
+        if planettype == 2:
+            outputwidth.append(random.randint(60, 100))
+        if planettype == 3:
+            outputwidth.append(random.randint(280, 360))
+        if planettype == 4:
+            outputwidth.append(random.randint(360, 450))
+        if generate2x:
+            if planettype == 0:
+                outputwidth.append(random.randint(300, 420))
+            if planettype == 1:
+                outputwidth.append(random.randint(200, 500))
+            if planettype == 2:
+                outputwidth.append(random.randint(120, 200))
+            if planettype == 3:
+                outputwidth.append(random.randint(560, 740))
+            if planettype == 4:
+                outputwidth.append(random.randint(740, 900))
+    else:
+        planetint = int(planetwidth)
+        outputwidth.append(planetint)
+        if generate2x:
+            outputwidth.append(planetint * 2)
+    return outputwidth
+
+
+def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth, planettype, bumplayeropacity, distance, gasopacity, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x):
 
     if groupundo:
         image.undo_group_start()
@@ -156,39 +192,26 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
     if not filename:
         filename = pdb.gimp_image_get_name(image)  # if not specified, use image name
     filename, dummy = os.path.splitext(filename)  # remove file extension
+    rawfilename = filename.decode("utf-8", "ignore")  # rawfilename must be UTF-8
 
 # save a .xcf file, if specified
     if savexcf:
-        filename = "%s.xcf" % filename  # add .xcf
-        rawfilename = filename.decode('utf-8', 'ignore')  # rawfilename must be UTF-8
-        pdb.gimp_xcf_save(0, image, image.active_layer, filename, rawfilename)
-        filename, dummy = os.path.splitext(filename)  # remove .xcf
+        pdb.gimp_xcf_save(0, image, image.active_layer, filename + ".xcf", rawfilename + ".xcf")
 
-
-# resize based on the planet type
-    if planetrand:
-        if planettype == 0:
-            outputwidth = random.randint(150, 210)
-        if planettype == 1:
-            outputwidth = random.randint(100, 250)
-        if planettype == 2:
-            outputwidth = random.randint(60, 100)
-        if planettype == 3:
-            outputwidth = random.randint(280, 360)
-        if planettype == 4:
-            outputwidth = random.randint(360, 450)
-        image.scale(outputwidth, outputwidth)
-    if not planetrand:
-        planetint = int(planetwidth)
-        image.scale(planetint, planetint)
-
-# merge layers and save as png
+# merge layers
     pdb.gimp_layer_set_visible(black, FALSE)
     pdb.gimp_layer_set_visible(texturelayer, FALSE)
+    pdb.gimp_layer_set_visible(planetlayer, TRUE)
     image.merge_visible_layers(0)
-    filename = "%s.png" % filename  # add .png
-    rawfilename = filename.decode('utf-8', 'ignore')  # rawfilename must be UTF-8
-    pdb.file_png_save_defaults(image, image.active_layer, filename, rawfilename)
+
+# save as png (twice, if prompted)
+    outputwidth = get_outputwidth(planetrand, planettype, generate2x, planetwidth)
+    if len(outputwidth) > 1:
+        image.scale(outputwidth[1], outputwidth[1])
+        pdb.file_png_save_defaults(image, image.active_layer, filename + "@2x.png", rawfilename + "@2x.png")
+    image.scale(outputwidth[0], outputwidth[0])
+    pdb.file_png_save_defaults(image, image.active_layer, filename + ".png", rawfilename + ".png")
+
 
     if groupundo:
         image.undo_group_end()
@@ -217,7 +240,8 @@ register(
     (PF_DRAWABLE, "texturelayer", "Select your texture layer here.", None),
     (PF_BOOL, "groupundo", "Group undo steps? If this is true, you can undo the entire script at once.", False ),
     (PF_FILE, "filename", "The name of the output file. Leave empty to use the texture name.", ""),  # insert your default file path here, inside the empty quotes
-    (PF_BOOL, "savexcf", "Do you want to save the .xcf source file? This is useless when Group Undo is enabled.", True)
+    (PF_BOOL, "savexcf", "Do you want to save the .xcf source file? This is useless when Group Undo is enabled.", True),
+    (PF_BOOL, "generate2x", "Generate an additional 2x version of the sprite.", True)
     ],
     [],
     createplanet,

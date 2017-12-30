@@ -86,7 +86,7 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
     pdb.gimp_context_set_foreground(atmospherecolor)
     pdb.gimp_bucket_fill(atmosphere, 0, 0, 100, 255, 0, 1, 1)
     pdb.gimp_selection_none(image)
-    pdb.plug_in_gauss_rle(image, atmosphere, width / 100, width / 100, width / 100)
+    pdb.plug_in_gauss_rle(image, atmosphere, width / 100, width / 100, width / 100, run_mode=1)
 
 # make the disk a shadow
     pdb.plug_in_gauss_rle(image, shadow1, width / 10, width / 10, width / 10)

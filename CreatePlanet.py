@@ -5,6 +5,10 @@ import random
 
 from gimpfu import *
 
+
+DEFAULT_PATH = "" # insert your default file path here
+
+
 pdb = gimp.pdb
 
 def maptoobject(image, layer):  # outsourced into a second method, because it might be needed twice
@@ -217,6 +221,23 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
         image.undo_group_end()
 
 
+"""
+WRAPPERS
+"""
+def createplanet_gas(image, atmospherecolor, planetrand, planetwidth, distance, gasopacity, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x):
+    createplanet(image, atmospherecolor, 2, planetrand, planetwidth, 4, 0, distance, gasopacity, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x)
+
+def createplanet_ice(image, atmospherecolor, planetrand, planetwidth, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x):
+    createplanet(image, atmospherecolor, 0, planetrand, planetwidth, 3, 0, 0, 0, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x)
+
+def createplanet_terrestrials(image, planetrand, planettype, planetwidth, bumplayeropacity, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x):
+    createplanet(image, (0, 0, 0), 1, planetrand, planetwidth, planettype, bumplayeropacity, 0, 0, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x)
+
+
+"""
+REGISTRATION
+"""
+
 register(
     "createplanet",
     N_("Create a planet sprite using the given texture."),
@@ -224,11 +245,11 @@ register(
     "MCOfficer",
     "@Copyright 2017",
     "2017",
-    N_("_Create Planet..."),
+    N_("_Universal..."),
     "",
     [
     (PF_IMAGE, "image", "Input image", None),
-    (PF_COLOR, "atmospherecolor", "Athmosphere Color. Default is white, only use a slight off-white tint for gas giants.", (255,255,255)),
+    (PF_COLOR, "atmospherecolor", "Atmosphere Color. Default is white, only use a slight off-white tint for gas giants.", (255,255,255)),
     (PF_RADIO, "postprocessing", "Determines what post-processing will be used", 0, (("None", 0), ("Terrestrial Planet", 1), ("Gas Giant", 2))),
     (PF_BOOL, "planetrand", "Random planet size, based on planet type chosen.", False ),
     (PF_SLIDER, "planetwidth", "The width of the new planet. Habitable Planet (150-210px), Other Terrestrial Planet (100-250px), Moon (60-110px), Ice Giant (280-360px), Gas Giant (360-450px)", 1, (60, 600, 10)),
@@ -239,12 +260,94 @@ register(
     (PF_SLIDER, "atmothickness", "The thickness of the atmosphere, in pixels.", 1, (0, 3, 0.05)),
     (PF_DRAWABLE, "texturelayer", "Select your texture layer here.", None),
     (PF_BOOL, "groupundo", "Group undo steps? If this is true, you can undo the entire script at once.", False ),
-    (PF_FILE, "filename", "The name of the output file. Leave empty to use the texture name.", ""),  # insert your default file path here, inside the empty quotes
+    (PF_FILE, "filename", "The name of the output file. Leave empty to use the texture name.", DEFAULT_PATH),
     (PF_BOOL, "savexcf", "Do you want to save the .xcf source file? This is useless when Group Undo is enabled.", True),
     (PF_BOOL, "generate2x", "Generate an additional 2x version of the sprite.", True)
     ],
     [],
     createplanet,
+)
+
+register(
+    "createplanet-gas",
+    N_("Create a gas giant sprite using the given texture."),
+    "Create a gas giant sprite using the given texture. See the Forum Post for more info.",
+    "MCOfficer",
+    "@Copyright 2017",
+    "2017",
+    N_("_Gas Giant..."),
+    "",
+    [
+    (PF_IMAGE, "image", "Input image", None),
+    (PF_COLOR, "atmospherecolor", "Atmosphere Color. Default is white, only use a slight off-white tint for gas giants.", (255,255,255)),
+    (PF_BOOL, "planetrand", "Random planet size", False ),
+    (PF_SLIDER, "planetwidth", "The width of the new planet. Only applies if random planet size is disabled.", 1, (360, 450, 5)),
+    (PF_SLIDER, "distance", "The motion blur distance. Only effective for gas giants.", 150, (100, 200, 1)),
+    (PF_SLIDER, "gasopacity", "The gas layer opacity. Only effective for gas giants.", 70, (0, 100, 1)),
+    (PF_SLIDER, "atmothickness", "The thickness of the atmosphere, in pixels.", 1, (0, 3, 0.05)),
+    (PF_DRAWABLE, "texturelayer", "Select your texture layer here.", None),
+    (PF_BOOL, "groupundo", "Group undo steps? If this is true, you can undo the entire script at once.", False ),
+    (PF_FILE, "filename", "The name of the output file. Leave empty to use the texture name.", DEFAULT_PATH),
+    (PF_BOOL, "savexcf", "Do you want to save the .xcf source file? This is useless when Group Undo is enabled.", True),
+    (PF_BOOL, "generate2x", "Generate an additional 2x version of the sprite.", True)
+    ],
+    [],
+    createplanet_gas,
+    menu="<Toolbox>/Scripts/",
+    domain=("gimp20-python", gimp.locale_directory)
+)
+
+register(
+    "createplanet-ice",
+    N_("Create a ice giant sprite using the given texture."),
+    "Create a ice giant sprite using the given texture. See the Forum Post for more info.",
+    "MCOfficer",
+    "@Copyright 2017",
+    "2017",
+    N_("_Ice Giant..."),
+    "",
+    [
+    (PF_IMAGE, "image", "Input image", None),
+    (PF_COLOR, "atmospherecolor", "Atmosphere Color. Default is white, only use a slight off-white tint for gas giants.", (255,255,255)),
+    (PF_BOOL, "planetrand", "Random planet size", False ),
+    (PF_SLIDER, "planetwidth", "The width of the new planet. Only applies if random planet size is disabled.", 1, (280, 360, 5)),
+    (PF_SLIDER, "atmothickness", "The thickness of the atmosphere, in pixels.", 1, (0, 3, 0.05)),
+    (PF_DRAWABLE, "texturelayer", "Select your texture layer here.", None),
+    (PF_BOOL, "groupundo", "Group undo steps? If this is true, you can undo the entire script at once.", False ),
+    (PF_FILE, "filename", "The name of the output file. Leave empty to use the texture name.", DEFAULT_PATH),
+    (PF_BOOL, "savexcf", "Do you want to save the .xcf source file? This is useless when Group Undo is enabled.", True),
+    (PF_BOOL, "generate2x", "Generate an additional 2x version of the sprite.", True)
+    ],
+    [],
+    createplanet_ice,
+    menu="<Toolbox>/Scripts/",
+    domain=("gimp20-python", gimp.locale_directory)
+)
+
+register(
+    "createplanet-terrestrials",
+    N_("Create a terrestrial using the given texture."),
+    "Create a terrestrial using the given texture. See the Forum Post for more info.",
+    "MCOfficer",
+    "@Copyright 2017",
+    "2017",
+    N_("_Terrestrials..."),
+    "",
+    [
+    (PF_IMAGE, "image", "Input image", None),
+    (PF_BOOL, "planetrand", "Random planet size, based on planet type chosen.", False ),
+    (PF_RADIO, "planettype", "Planettype, determines the width of the output image. Only effective for random planet sizes.", 1, (("Habitable Planet (150-210px)", 0), ("Other Terrestrial Planet (100-250px)", 1), ("Moon (60-110px)", 2))),
+    (PF_SLIDER, "planetwidth", "The width of the new planet (Habitable Planet: 150-210px, Other Terrestrial Planet: 100-250px, Moon: 60-110px). Only apples if random planet size is disabled.", 1, (60, 250, 5)),
+    (PF_SLIDER, "bumplayeropacity", "The opacity of the bumpmap layer. Only effective for terrestrial planets.", 80, (0, 100, 1)),
+    (PF_SLIDER, "atmothickness", "The thickness of the atmosphere, in pixels.", 1, (0, 3, 0.05)),
+    (PF_DRAWABLE, "texturelayer", "Select your texture layer here.", None),
+    (PF_BOOL, "groupundo", "Group undo steps? If this is true, you can undo the entire script at once.", False ),
+    (PF_FILE, "filename", "The name of the output file. Leave empty to use the texture name.", DEFAULT_PATH),
+    (PF_BOOL, "savexcf", "Do you want to save the .xcf source file? This is useless when Group Undo is enabled.", True),
+    (PF_BOOL, "generate2x", "Generate an additional 2x version of the sprite.", True)
+    ],
+    [],
+    createplanet_terrestrials,
     menu="<Toolbox>/Scripts/",
     domain=("gimp20-python", gimp.locale_directory)
 )

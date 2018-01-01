@@ -105,8 +105,7 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
 
 # add a black background
     black = gimp.Layer(image, "black background", width, width, RGB_IMAGE, 100, NORMAL_MODE)
-    image.add_layer(black, 0)
-    image.lower_layer(black)
+    pdb.gimp_image_insert_layer(image, black, None, 2)
 
 # select the planet
     pdb.gimp_image_set_active_layer(image, planetlayer)

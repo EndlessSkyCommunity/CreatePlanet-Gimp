@@ -85,8 +85,8 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
         image.undo_group_start()
 
 # check if image is in RGB, if not then change type
-        if image.base_type != RGB:
-                pdb.gimp_convert_rgb(image)
+    if pdb.gimp_image_base_type(image) is not 0:
+        pdb.gimp_image_convert_rgb(image)
 
 # rescale the image to square
     if image.width < image.height:

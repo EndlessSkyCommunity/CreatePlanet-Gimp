@@ -5,8 +5,11 @@ import random
 
 from gimpfu import *
 
-
-DEFAULT_PATH = "" # insert your default file path here
+"""
+Insert your default file path here. If you are on windows, remember to escape the backslashes with another backslash.
+Example: C:\\Users\\Name\\test.png
+"""
+DEFAULT_PATH = "C:\\Users\\Florian\\test.png"
 
 
 pdb = gimp.pdb

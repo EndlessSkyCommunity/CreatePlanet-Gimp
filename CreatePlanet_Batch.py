@@ -88,7 +88,7 @@ register(
     ],
     [],
     createplanet_batch,
-    menu="<Toolbox>/Scripts/",
+    menu="<Toolbox>/CreatePlanet/",
     domain=("gimp20-python", gimp.locale_directory)
 )
 

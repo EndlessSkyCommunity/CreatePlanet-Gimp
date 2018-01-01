@@ -266,6 +266,8 @@ register(
     ],
     [],
     createplanet,
+    menu="<Toolbox>/CreatePlanet/",
+    domain=("gimp20-python", gimp.locale_directory)
 )
 
 register(
@@ -293,7 +295,7 @@ register(
     ],
     [],
     createplanet_gas,
-    menu="<Toolbox>/Scripts/",
+    menu="<Toolbox>/CreatePlanet/",
     domain=("gimp20-python", gimp.locale_directory)
 )
 
@@ -320,7 +322,7 @@ register(
     ],
     [],
     createplanet_ice,
-    menu="<Toolbox>/Scripts/",
+    menu="<Toolbox>/CreatePlanet/",
     domain=("gimp20-python", gimp.locale_directory)
 )
 
@@ -348,7 +350,7 @@ register(
     ],
     [],
     createplanet_terrestrials,
-    menu="<Toolbox>/Scripts/",
+    menu="<Toolbox>/CreatePlanet/",
     domain=("gimp20-python", gimp.locale_directory)
 )
 

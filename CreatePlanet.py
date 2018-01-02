@@ -2,6 +2,7 @@
 
 import os
 import random
+from math import radians
 
 from gimpfu import *
 
@@ -82,7 +83,7 @@ def get_outputwidth(planetrand, planettype, generate2x, planetwidth):
     return outputwidth
 
 
-def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth, planettype, bumplayeropacity, distance, gasopacity, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x):
+def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth, planettype, bumplayeropacity, distance, gasopacity, gasangle, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x):
 
     if groupundo:
         image.undo_group_start()
@@ -188,6 +189,8 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
         while counter < 3:
             image.lower_layer(gaslayer)
             counter = counter + 1
+        if gasangle is not 0:
+            pdb.gimp_item_transform_rotate(gaslayer, radians(float(gasangle)), TRUE, 0, 0)
 
 # crop the image around the planet
     cropoff = int(round(width / 4.3))  # minimal distance between the edge of the image and the atmosphere, with tolerance
@@ -226,14 +229,15 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
 """
 WRAPPERS
 """
-def createplanet_gas(image, atmospherecolor, planetrand, planetwidth, distance, gasopacity, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x):
-    createplanet(image, atmospherecolor, 2, planetrand, planetwidth, 4, 0, distance, gasopacity, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x)
+
+def createplanet_gas(image, atmospherecolor, planetrand, planetwidth, distance, gasopacity, gasangle, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x):
+    createplanet(image, atmospherecolor, 2, planetrand, planetwidth, 4, 0, distance, gasopacity, gasangle, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x)
 
 def createplanet_ice(image, atmospherecolor, planetrand, planetwidth, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x):
-    createplanet(image, atmospherecolor, 0, planetrand, planetwidth, 3, 0, 0, 0, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x)
+    createplanet(image, atmospherecolor, 0, planetrand, planetwidth, 3, 0, 0, 0, 0, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x)
 
 def createplanet_terrestrials(image, planetrand, planettype, planetwidth, bumplayeropacity, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x):
-    createplanet(image, (0, 0, 0), 1, planetrand, planetwidth, planettype, bumplayeropacity, 0, 0, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x)
+    createplanet(image, (0, 0, 0), 1, planetrand, planetwidth, planettype, bumplayeropacity, 0, 0, 0, atmothickness, texturelayer, groupundo, filename, savexcf, generate2x)
 
 
 """
@@ -259,6 +263,7 @@ register(
     (PF_SLIDER, "bumplayeropacity", "The opacity of the bumpmap layer. Only effective for terrestrial planets.", 80, (0, 100, 1)),
     (PF_SLIDER, "distance", "The motion blur distance. Only effective for gas giants.", 150, (100, 200, 1)),
     (PF_SLIDER, "gasopacity", "The gas layer opacity. Only effective for gas giants.", 70, (0, 100, 1)),
+    (PF_SLIDER, "gasangle", "The rotation of the gas layer. Only effective for gas giants.", 0, (-180, 180, 1)),
     (PF_SLIDER, "atmothickness", "The thickness of the atmosphere, in pixels.", 1, (0, 3, 0.05)),
     (PF_DRAWABLE, "texturelayer", "Select your texture layer here.", None),
     (PF_BOOL, "groupundo", "Group undo steps? If this is true, you can undo the entire script at once.", False ),
@@ -288,6 +293,7 @@ register(
     (PF_SLIDER, "planetwidth", "The width of the new planet. Only applies if random planet size is disabled.", 1, (360, 450, 5)),
     (PF_SLIDER, "distance", "The motion blur distance. Only effective for gas giants.", 150, (100, 200, 1)),
     (PF_SLIDER, "gasopacity", "The gas layer opacity. Only effective for gas giants.", 70, (0, 100, 1)),
+    (PF_SLIDER, "gasangle", "The rotation of the gas layer.", 0, (-180, 180, 1)),
     (PF_SLIDER, "atmothickness", "The thickness of the atmosphere, in pixels.", 1, (0, 3, 0.05)),
     (PF_DRAWABLE, "texturelayer", "Select your texture layer here.", None),
     (PF_BOOL, "groupundo", "Group undo steps? If this is true, you can undo the entire script at once.", False ),

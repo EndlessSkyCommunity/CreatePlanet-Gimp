@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-
 from gimpfu import *
 
 pdb = gimp.pdb
@@ -58,7 +57,7 @@ def createplanet_batch(atmospherecolor, postprocessing, planetrand, planetwidth,
                 planettype = 4
 
     # let createplanet do the rest
-        pdb.python_fu_createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth, planettype, bumplayeropacity, distance, gasopacity, atmothickness, layer, groupundo, outputpath, savexcf)
+        pdb.python_fu_createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth, planettype, bumplayeropacity, distance, gasopacity, gasangle, atmothickness, layer, groupundo, outputpath, savexcf)
 
 
 
@@ -80,6 +79,7 @@ register(
     (PF_SLIDER, "bumplayeropacity", "The opacity of the bumpmap layer. Only effective for terrestrial planets.", 80, (0, 100, 1)),
     (PF_SLIDER, "distance", "The motion blur distance. Only effective for gas giants.", 150, (100, 200, 1)),
     (PF_SLIDER, "gasopacity", "The gas layer opacity. Only effective for gas giants.", 70, (0, 100, 1)),
+    (PF_SLIDER, "gasangle", "The rotation of the gas layer.", 0, (-180, 180, 1)),
     (PF_SLIDER, "atmothickness", "The thickness of the atmosphere, in pixels.", 1, (0, 3, 0.05)),
     (PF_BOOL, "groupundo", "Group undo steps? If this is true, you can undo the entire script at once.", False ),
     (PF_BOOL, "prefixdetection", "Prefix Detection sets planet type and post processing depending on the file's prefix. Possible prefixes are: 'hp-', 'otp-', 'm-', 'ig-', 'gg-'. Example filename: 'hp-texture00303423.jpg'.", True),

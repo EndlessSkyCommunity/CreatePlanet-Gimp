@@ -18,33 +18,33 @@ pdb = gimp.pdb
 def maptoobject(image, layer):  # outsourced into a second method, because it might be needed twice
     pdb.plug_in_map_object(
     # image, drawable, maptype=sphere
-    image,layer,1,
+    image, layer, 1,
     # viewpoint x, y, z
-    0.5,0.5,1,
+    0.5, 0.5, 1,
     # position x, y, z
-    0.5,0.5,0,
+    0.5, 0.5, 0,
     # first-axis x, y, z
-    1,0,0,
+    1, 0, 0,
     # second-axis x, y, z
-    0,1,0,
+    0, 1, 0,
     # rotation-angle x, y, z
-    0,0,0,
+    0, 0, 0,
     # lighttype=none
     2,
-    # light color (r,g,b)
-    (0,0,0),
+    # light color (r, g, b)
+    (0, 0, 0),
     # light position x, y, z
-    -0.5,-0.5,2,
+    -0.5, -0.5, 2,
     # light direction x, y, z
-    -1,-1,1,
+    -1, -1, 1,
     # ambientintesity, diffuseintesity, diffusereflectivity, specularreflectivity
-    0.3,1,0.5,0.5,
+    0.3, 1, 0.5, 0.5,
     # highlight, antialiasing, tiled, newimage, traparentbackground, radius
-    27,1,0,0,1,0.25,
+    27, 1, 0, 0, 1, 0.25,
     # scale x, y, z
-    0.5,0.5,0.5,
+    0.5, 0.5, 0.5,
     # cylinderlegth, 8 drawables used by cylinders & boxes
-    0,layer,layer,layer,layer,layer,layer,layer,layer
+    0, layer, layer, layer, layer, layer, layer, layer, layer
     )
 
 """
@@ -255,7 +255,7 @@ register(
     "",
     [
     (PF_IMAGE, "image", "Input image", None),
-    (PF_COLOR, "atmospherecolor", "Atmosphere Color. Default is white, only use a slight off-white tint for gas giants.", (255,255,255)),
+    (PF_COLOR, "atmospherecolor", "Atmosphere Color. Default is white, only use a slight off-white tint for gas giants.", (255, 255, 255)),
     (PF_RADIO, "postprocessing", "Determines what post-processing will be used", 0, (("None", 0), ("Terrestrial Planet", 1), ("Gas Giant", 2))),
     (PF_BOOL, "planetrand", "Random planet size, based on planet type chosen.", False ),
     (PF_SLIDER, "planetwidth", "The width of the new planet. Habitable Planet (150-210px), Other Terrestrial Planet (100-250px), Moon (60-110px), Ice Giant (280-360px), Gas Giant (360-450px)", 1, (60, 600, 10)),
@@ -288,7 +288,7 @@ register(
     "",
     [
     (PF_IMAGE, "image", "Input image", None),
-    (PF_COLOR, "atmospherecolor", "Atmosphere Color. Default is white, only use a slight off-white tint for gas giants.", (255,255,255)),
+    (PF_COLOR, "atmospherecolor", "Atmosphere Color. Default is white, only use a slight off-white tint for gas giants.", (255, 255, 255)),
     (PF_BOOL, "planetrand", "Random planet size", False ),
     (PF_SLIDER, "planetwidth", "The width of the new planet. Only applies if random planet size is disabled.", 1, (360, 450, 5)),
     (PF_SLIDER, "distance", "The motion blur distance. Only effective for gas giants.", 150, (100, 200, 1)),
@@ -318,7 +318,7 @@ register(
     "",
     [
     (PF_IMAGE, "image", "Input image", None),
-    (PF_COLOR, "atmospherecolor", "Atmosphere Color. Default is white, only use a slight off-white tint for gas giants.", (255,255,255)),
+    (PF_COLOR, "atmospherecolor", "Atmosphere Color. Default is white, only use a slight off-white tint for gas giants.", (255, 255, 255)),
     (PF_BOOL, "planetrand", "Random planet size", False ),
     (PF_SLIDER, "planetwidth", "The width of the new planet. Only applies if random planet size is disabled.", 1, (280, 360, 5)),
     (PF_SLIDER, "atmothickness", "The thickness of the atmosphere, in pixels.", 1, (0, 3, 0.05)),

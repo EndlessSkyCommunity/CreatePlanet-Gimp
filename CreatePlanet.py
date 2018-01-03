@@ -39,7 +39,7 @@ def maptoobject(image, layer):  # outsourced into a second method, because it mi
     -1, -1, 1,
     # ambientintesity, diffuseintesity, diffusereflectivity, specularreflectivity
     0.3, 1, 0.5, 0.5,
-    # highlight, antialiasing, tiled, newimage, traparentbackground, radius
+    # highlight, antialiasing, tiled, newimage, transparentbackground, radius
     27, 1, 0, 0, 1, 0.25,
     # scale x, y, z
     0.5, 0.5, 0.5,
@@ -91,6 +91,9 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
 # check if image is in RGB, if not then change type
     if pdb.gimp_image_base_type(image) is not 0:
         pdb.gimp_image_convert_rgb(image)
+
+# prevent some weird resizing errors
+    image.resize_to_layers()
 
 # rescale the image to square
     if image.width < image.height:

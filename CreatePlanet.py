@@ -107,9 +107,8 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
         width = image.width
 
 # map the texture to a sphere to create the planet
-    planetlayer = pdb.gimp_layer_copy(texturelayer, FALSE)
-    pdb.gimp_image_insert_layer(image, planetlayer, None, 0)
-    maptoobject(image, planetlayer)
+    maptoobject(image, texturelayer)
+    planetlayer = image.active_layer
 
 # add a black background
     black = gimp.Layer(image, "black background", width, width, RGB_IMAGE, 100, NORMAL_MODE)
@@ -189,6 +188,8 @@ def createplanet(image, atmospherecolor, postprocessing, planetrand, planetwidth
         pdb.gimp_image_insert_layer(image, gaslayer, None, 0)
         pdb.plug_in_mblur(image, gaslayer, 0, distance, 0, 0, 0)
         maptoobject(image, gaslayer)
+        image.remove_layer(gaslayer)
+        gaslayer = image.active_layer
         pdb.gimp_layer_set_opacity(gaslayer, gasopacity)
         counter = 0
         while counter < 3:

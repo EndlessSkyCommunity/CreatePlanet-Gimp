@@ -10,15 +10,15 @@ from gimpfu import *
 
 """
 Insert your default file path here. If you are on windows, remember to escape the backslashes with another backslash.
-Example: C:\\Users\\Name\\test.png
+This is relative to your home directory
+Example: Desktop\\test.png
 """
-DEFAULT_PATH_WINDOWS = "C:\\Users\\Florian\\test.png"
-DEFAULT_PATH_LINUXMAC = "~/test.png"
+DEFAULT_PATH = "planet.png"
 
 if platform == "win32":
-	DEFAULT_PATH = DEFAULT_PATH_WINDOWS
+	DEFAULT_PATH = expanduser("~\\" + DEFAULT_PATH)
 else:
-	DEFAULT_PATH = expanduser(DEFAULT_PATH_LINUXMAC)
+	DEFAULT_PATH = expanduser("~/" + DEFAULT_PATH)
 
 pdb = gimp.pdb
 

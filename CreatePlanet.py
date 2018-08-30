@@ -2,6 +2,7 @@
 
 import os
 from os.path import expanduser
+from os.path import isabs
 from sys import platform
 import random
 from math import radians
@@ -10,12 +11,14 @@ from gimpfu import *
 
 """
 Insert your default file path here. If you are on windows, remember to escape the backslashes with another backslash.
-This is relative to your home directory
+This is relative to your home directory. You can also pass an absolute path if you so choose
 Example: Desktop\\test.png
 """
 DEFAULT_PATH = "planet.png"
 
-if platform == "win32":
+if(isabs(DEFAULT_PATH)):
+	pass
+elif platform == "win32":
 	DEFAULT_PATH = expanduser("~\\" + DEFAULT_PATH)
 else:
 	DEFAULT_PATH = expanduser("~/" + DEFAULT_PATH)

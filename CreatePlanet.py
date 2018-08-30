@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import os
+from os.path import expanduser
+from sys import platform
 import random
 from math import radians
 
@@ -10,8 +12,13 @@ from gimpfu import *
 Insert your default file path here. If you are on windows, remember to escape the backslashes with another backslash.
 Example: C:\\Users\\Name\\test.png
 """
-DEFAULT_PATH = "C:\\Users\\Florian\\test.png"
+DEFAULT_PATH_WINDOWS = "C:\\Users\\Florian\\test.png"
+DEFAULT_PATH_LINUXMAC = "~/test.png"
 
+if platform == "win32":
+	DEFAULT_PATH = DEFAULT_PATH_WINDOWS
+else:
+	DEFAULT_PATH = expanduser(DEFAULT_PATH_LINUXMAC)
 
 pdb = gimp.pdb
 

@@ -75,16 +75,7 @@ def get_outputwidth(planetrand, planettype, generate2x, planetwidth):
         if planettype == 4:
             outputwidth.append(random.randint(360, 450))
         if generate2x:
-            if planettype == 0:
-                outputwidth.append(random.randint(300, 420))
-            if planettype == 1:
-                outputwidth.append(random.randint(200, 500))
-            if planettype == 2:
-                outputwidth.append(random.randint(120, 200))
-            if planettype == 3:
-                outputwidth.append(random.randint(560, 740))
-            if planettype == 4:
-                outputwidth.append(random.randint(740, 900))
+            outputwidth.append(outputwidth[0] * 2)
     else:
         planetint = int(planetwidth)
         outputwidth.append(planetint)
